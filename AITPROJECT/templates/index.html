@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+{% block title %}AIT Control Panel{% endblock %}
+
+{% block head %}
+{{ super() }}
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.bootstrap4.min.css">
+{% endblock %}
+
+{% block content %}
+<section class="content">
+  <div class="container-fluid">
+    <!-- Overview Card -->
+    <div class="card card-info card-outline mb-3">
+      <div class="card-header">
+        <h3 class="card-title d-flex flex-wrap align-items-center" style="gap: 1.5rem;">
+          <i class="fas fa-th-large me-2"></i> Overview
+
+          <span class="me-3">
+            <i class="fas fa-coins me-1"></i>
+            Kucoin: <span id="kc-health" class="badge bg-secondary">Checking...</span>
+          </span>
+
+          <span class="me-3">
+            <i class="fas fa-tasks me-1"></i>
+            Active Orders: <span id="kc-active-orders" class="badge bg-secondary">Checking…</span>
+          </span>
+
+          <span class="me-3">
+            <i class="fas fa-robot me-1"></i>
+            Algo Loaded: <span id="algo-models-loaded" class="badge bg-secondary">false</span>
+          </span>
+
+          <span class="me-3">
+            <i class="fas fa-play-circle me-1"></i>
+            Algo Running: <span id="algo-task-running" class="badge bg-secondary">false</span>
+          </span>
+
+          <span class="me-3">
+            <i class="fas fa-heartbeat me-1"></i>
+            Algo Healthy: <span id="algo-healthy" class="badge bg-secondary">false</span>
+          </span>
+
+          <span>
+            <i class="fas fa-clock me-1"></i>
+            Last Checked: <span id="algo-last-checked" class="small text-muted">--:--:--</span>
+          </span>
+        </h3>
+
+        <div class="card-tools">
+          <!-- single collapse icon for AdminLTE3 -->
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+        </div>
+      </div>
+
+
+      <div class="card-body">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-2 mb-0">
+          <!-- App Stats + Balances Dropdown -->
+          <div class="col">
+            <div class="info-box bg-info">
+              <span class="info-box-icon">
+                <i class="fas fa-tachometer-alt"></i>
+              </span>
+              <div class="info-box-content">
+                <span class="info-box-text">App Stats</span>
+                <div class="mt-1 dropdown">
+                  <button class="btn btn-sm btn-light dropdown-toggle" type="button" id="balancesDropdown"
+                    data-toggle="dropdown" data-boundary="viewport" aria-haspopup="true" aria-expanded="false">
+                    Balances
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="balancesDropdown"
+                    id="kc-balances-list">
+                    <a class="dropdown-item">Loading…</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Performance -->
+          <div class="col">
+            <div class="info-box bg-primary text-white">
+              <span class="info-box-icon"><i class="fas fa-percent"></i></span>
+              <div class="info-box-content">
+                <span class="info-box-text">Performance</span>
+                <span class="info-box-number" id="performance">--</span>
+              </div>
+            </div>
+          </div>
+          <!-- Trades Taken -->
+          <div class="col">
+            <div class="info-box bg-warning">
+              <span class="info-box-icon"><i class="fas fa-chart-line"></i></span>
+              <div class="info-box-content">
+                <span class="info-box-text">Trades Taken</span>
+                <span class="info-box-number" id="trades-taken">--</span>
+              </div>
+            </div>
+          </div>
+          <!-- Wins -->
+          <div class="col">
+            <div class="info-box bg-success text-white">
+              <span class="info-box-icon"><i class="fas fa-trophy"></i></span>
+              <div class="info-box-content">
+                <span class="info-box-text">Wins</span>
+                <span class="info-box-number" id="wins">--</span>
+              </div>
+            </div>
+          </div>
+          <!-- Losses -->
+          <div class="col">
+            <div class="info-box bg-danger text-white">
+              <span class="info-box-icon"><i class="fas fa-bomb"></i></span>
+              <div class="info-box-content">
+                <span class="info-box-text">Losses</span>
+                <span class="info-box-number" id="losses">--</span>
+              </div>
+            </div>
+          </div>
+          <!-- Pred High -->
+          <div class="col">
+            <div class="info-box bg-success text-white">
+              <span class="info-box-icon"><i class="fas fa-arrow-up"></i></span>
+              <div class="info-box-content">
+                <span class="info-box-text">Pred High</span>
+                <span class="info-box-number" id="pred-high">--</span>
+              </div>
+            </div>
+          </div>
+          <!-- Pred Low -->
+          <div class="col">
+            <div class="info-box bg-danger text-white">
+              <span class="info-box-icon"><i class="fas fa-arrow-down"></i></span>
+              <div class="info-box-content">
+                <span class="info-box-text">Pred Low</span>
+                <span class="info-box-number" id="pred-low">--</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<section class="content">
+  <div class="container-fluid">
+    <div class="card card-primary card-outline collapsed-card">
+      <div class="card-header">
+        <h3 class="card-title">Current Configuration</h3>
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-plus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th style="width: 30%;">Key</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for key, value in config.items() %}
+            <tr>
+              <td><code>{{ key }}</code></td>
+              <td class="text-break">{{ value }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- Chart & Logs Row -->
+    <div class="row mb-3">
+      <!-- Price Chart Card -->
+      <div class="col-md-6">
+        <div class="card card-primary card-outline">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-title"><i class="fas fa-chart-area"></i> Price Chart</h3>
+            <div class="card-tools d-flex align-items-center">
+              <select id="pair" class="form-control form-control-sm w-auto mr-2">
+                  <option>{{ default_pair }}</option>
+              </select>
+              <button id="start" class="btn btn-success btn-sm mr-1">
+                <i class="fas fa-play mr-1"></i>Start
+              </button>
+              <button id="stop" class="btn btn-danger btn-sm mr-1">
+                <i class="fas fa-stop mr-1"></i>Stop
+              </button>
+              <button id="close" class="btn btn-light btn-sm">
+                <i class="fas fa-times-circle mr-1"></i>Close
+              </button>
+              <!-- collapse -->
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+              </button>
+              <!-- maximize -->
+              <button type="button" class="btn btn-tool" data-card-widget="maximize">
+                <i class="fas fa-expand"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div id="chart" style="height:350px"></div>
+          </div>
+          <div class="card-footer">
+            <small class="text-muted">2 h window | ~1 update/sec</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logs Card -->
+      <div class="col-md-6">
+        <div class="card card-warning card-outline direct-chat direct-chat-warning">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-title"><i class="fas fa-terminal"></i> Logs</h3>
+            <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+              </button>
+              <button type="button" class="btn btn-tool" data-card-widget="maximize">
+                <i class="fas fa-expand"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="direct-chat-messages" style="max-height: 600px; overflow-y: auto;">
+              <pre id="logs" class="mb-0 bg-dark text-light p-2"
+                style="border-radius:4px; font-family: monospace; white-space: pre-wrap;"></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Trade Data Table -->
+    <div class="row mt-2">
+      <div class="col-12">
+        <div class="card card-info card-outline">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-title">
+              <i class="fas fa-table"></i> Trade Data
+            </h3>
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+              <i class="fas fa-minus"></i>
+            </button>
+          </div>
+          <div class="card-body p-0">
+            <table id="trade-data-table" class="table table-bordered table-hover mb-0">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Symbol</th>
+                  <th>Side</th>
+                  <th>Order Type</th>
+                  <th>Size</th>
+                  <th>Deal Funds</th>
+                  <th>Fee</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Orders Table -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card card-secondary card-outline">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-list"></i> Orders (Active + Done)</h3>
+          </div>
+          <div class="card-body p-0">
+            <table id="orders-table" class="table table-bordered table-hover mb-0">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Symbol</th>
+                  <th>Side</th>
+                  <th>Type</th>
+                  <th>Price</th>
+                  <th>Size</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<!-- DataTables & extensions -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.4.1/js/responsive.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.bootstrap4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+{% endblock %}

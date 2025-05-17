@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+jinja2
+python-multipart
+redis
+python-kucoin
+python-dotenv
+pandas
+joblib
+scikit-learn==1.5.2
+asyncio
+sse-starlette
+aiofiles
+broadcaster
+websockets
+sqlalchemy

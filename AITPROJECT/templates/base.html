@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>{% block title %}AIT Control Panel{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Bootstrap 4 CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+    crossorigin="anonymous"
+  />
+
+  <!-- FontAwesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    crossorigin="anonymous"
+  />
+
+  <!-- AdminLTE 3 CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/css/adminlte.min.css"
+    crossorigin="anonymous"
+  />
+
+  <!-- Tiny override so .dropdown-menu isn’t clipped -->
+  <style>
+    .info-box-content {
+      /* Allow dropdown to overflow the info-box */
+      overflow: visible !important;
+    }
+  </style>
+
+  <!-- Your custom styles -->
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', path='css/styles.css') }}"
+  />
+
+  {% block head %}{% endblock %}
+</head>
+<body class="hold-transition layout-top-nav">
+  <div class="wrapper">
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="container-fluid">
+          {% block content %}{% endblock %}
+        </div>
+      </div>
+    </div>
+
+    <footer class="main-footer">
+      <div class="container">
+        <strong>
+          <a
+            href="https://fiver.com/automateanythin"
+            target="_blank"
+            rel="noopener noreferrer"
+          >fiver.com/automateanythin</a>
+        </strong>
+      </div>
+    </footer>
+  </div><!-- /.wrapper -->
+
+  <!-- jQuery -->
+  <script
+    src="https://code.jquery.com/jquery-3.6.0.min.js"
+    crossorigin="anonymous"
+  ></script>
+  <!-- Bootstrap 4 Bundle (includes Popper) -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"
+  ></script>
+  <!-- AdminLTE 3 JS -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/js/adminlte.min.js"
+    crossorigin="anonymous"
+  ></script>
+  <!-- Chart library -->
+  <script
+    src="https://unpkg.com/lightweight-charts@3.8.0/dist/lightweight-charts.standalone.production.js"
+  ></script>
+
+  <!-- Your custom JS -->
+  <script src="{{ url_for('static', path='js/websocket.js') }}"></script>
+  <script src="{{ url_for('static', path='js/logstreaming.js') }}"></script>
+  <script src="{{ url_for('static', path='js/kucoin.js') }}"></script>
+  <script src="{{ url_for('static', path='js/kucoin-load-my-fills.js') }}"></script>
+  <script src="{{ url_for('static', path='js/appstats.js') }}"></script>
+  <script src="{{ url_for('static', path='js/algohealth.js') }}"></script>
+  <script src="{{ url_for('static', path='js/algopredictions.js') }}"></script>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>
